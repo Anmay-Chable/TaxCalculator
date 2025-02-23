@@ -1,6 +1,6 @@
 ﻿namespace TaxCalculator
 {
-    partial class Form1
+    partial class frmTaxCalculator
     {
         /// <summary>
         ///  Required designer variable.
