@@ -49,7 +49,7 @@
             // TaxableIncomeLabel
             // 
             TaxableIncomeLabel.AutoSize = true;
-            TaxableIncomeLabel.Location = new Point(145, 115);
+            TaxableIncomeLabel.Location = new Point(60, 103);
             TaxableIncomeLabel.Name = "TaxableIncomeLabel";
             TaxableIncomeLabel.Size = new Size(183, 32);
             TaxableIncomeLabel.TabIndex = 0;
@@ -58,7 +58,7 @@
             // IncomeOwedLabel
             // 
             IncomeOwedLabel.AutoSize = true;
-            IncomeOwedLabel.Location = new Point(145, 203);
+            IncomeOwedLabel.Location = new Point(60, 183);
             IncomeOwedLabel.Name = "IncomeOwedLabel";
             IncomeOwedLabel.Size = new Size(201, 32);
             IncomeOwedLabel.TabIndex = 1;
@@ -66,14 +66,14 @@
             // 
             // txbTaxableIncome
             // 
-            txbTaxableIncome.Location = new Point(398, 115);
+            txbTaxableIncome.Location = new Point(330, 103);
             txbTaxableIncome.Name = "txbTaxableIncome";
             txbTaxableIncome.Size = new Size(200, 39);
             txbTaxableIncome.TabIndex = 2;
             // 
             // txbIncomeOwed
             // 
-            txbIncomeOwed.Location = new Point(398, 200);
+            txbIncomeOwed.Location = new Point(330, 180);
             txbIncomeOwed.Name = "txbIncomeOwed";
             txbIncomeOwed.ReadOnly = true;
             txbIncomeOwed.Size = new Size(200, 39);
@@ -90,7 +90,7 @@
             // 
             // btnExit
             // 
-            btnExit.Location = new Point(638, 300);
+            btnExit.Location = new Point(519, 300);
             btnExit.Name = "btnExit";
             btnExit.Size = new Size(150, 46);
             btnExit.TabIndex = 5;
@@ -104,7 +104,7 @@
             menuStrip1.Items.AddRange(new ToolStripItem[] { loadToolStripMenuItem, showToolStripMenuItem, saveToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(800, 40);
+            menuStrip1.Size = new Size(681, 40);
             menuStrip1.TabIndex = 6;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -165,7 +165,7 @@
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             CancelButton = btnExit;
-            ClientSize = new Size(800, 380);
+            ClientSize = new Size(681, 368);
             Controls.Add(btnExit);
             Controls.Add(btnCalculate);
             Controls.Add(txbIncomeOwed);
