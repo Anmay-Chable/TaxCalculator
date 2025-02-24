@@ -36,12 +36,12 @@
             btnExit = new Button();
             menuStrip1 = new MenuStrip();
             loadToolStripMenuItem = new ToolStripMenuItem();
-            showToolStripMenuItem = new ToolStripMenuItem();
-            saveToolStripMenuItem = new ToolStripMenuItem();
             taxScheduleToolStripMenuItem = new ToolStripMenuItem();
             employeeIncomeToolStripMenuItem = new ToolStripMenuItem();
+            showToolStripMenuItem = new ToolStripMenuItem();
             currentTaxScheduleToolStripMenuItem = new ToolStripMenuItem();
             employeeTaxesToolStripMenuItem = new ToolStripMenuItem();
+            saveToolStripMenuItem = new ToolStripMenuItem();
             saveEmpolyeeTaxesToFileToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
@@ -96,6 +96,7 @@
             btnExit.TabIndex = 5;
             btnExit.Text = "E&xit";
             btnExit.UseVisualStyleBackColor = true;
+            btnExit.Click += btnExit_Click;
             // 
             // menuStrip1
             // 
@@ -111,34 +112,27 @@
             // 
             loadToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { taxScheduleToolStripMenuItem, employeeIncomeToolStripMenuItem });
             loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            loadToolStripMenuItem.Size = new Size(85, 38);
+            loadToolStripMenuItem.Size = new Size(85, 36);
             loadToolStripMenuItem.Text = "Load";
-            // 
-            // showToolStripMenuItem
-            // 
-            showToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { currentTaxScheduleToolStripMenuItem, employeeTaxesToolStripMenuItem });
-            showToolStripMenuItem.Name = "showToolStripMenuItem";
-            showToolStripMenuItem.Size = new Size(92, 38);
-            showToolStripMenuItem.Text = "Show";
-            // 
-            // saveToolStripMenuItem
-            // 
-            saveToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { saveEmpolyeeTaxesToFileToolStripMenuItem });
-            saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            saveToolStripMenuItem.Size = new Size(84, 36);
-            saveToolStripMenuItem.Text = "Save";
             // 
             // taxScheduleToolStripMenuItem
             // 
             taxScheduleToolStripMenuItem.Name = "taxScheduleToolStripMenuItem";
-            taxScheduleToolStripMenuItem.Size = new Size(359, 44);
+            taxScheduleToolStripMenuItem.Size = new Size(355, 44);
             taxScheduleToolStripMenuItem.Text = "Tax Schedule ...";
             // 
             // employeeIncomeToolStripMenuItem
             // 
             employeeIncomeToolStripMenuItem.Name = "employeeIncomeToolStripMenuItem";
-            employeeIncomeToolStripMenuItem.Size = new Size(359, 44);
+            employeeIncomeToolStripMenuItem.Size = new Size(355, 44);
             employeeIncomeToolStripMenuItem.Text = "Employee Income ..";
+            // 
+            // showToolStripMenuItem
+            // 
+            showToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { currentTaxScheduleToolStripMenuItem, employeeTaxesToolStripMenuItem });
+            showToolStripMenuItem.Name = "showToolStripMenuItem";
+            showToolStripMenuItem.Size = new Size(92, 36);
+            showToolStripMenuItem.Text = "Show";
             // 
             // currentTaxScheduleToolStripMenuItem
             // 
@@ -152,6 +146,13 @@
             employeeTaxesToolStripMenuItem.Size = new Size(372, 44);
             employeeTaxesToolStripMenuItem.Text = "Employee Taxes";
             // 
+            // saveToolStripMenuItem
+            // 
+            saveToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { saveEmpolyeeTaxesToFileToolStripMenuItem });
+            saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            saveToolStripMenuItem.Size = new Size(84, 36);
+            saveToolStripMenuItem.Text = "Save";
+            // 
             // saveEmpolyeeTaxesToFileToolStripMenuItem
             // 
             saveEmpolyeeTaxesToFileToolStripMenuItem.Name = "saveEmpolyeeTaxesToFileToolStripMenuItem";
@@ -160,8 +161,10 @@
             // 
             // frmTaxCalculator
             // 
+            AcceptButton = btnCalculate;
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
+            CancelButton = btnExit;
             ClientSize = new Size(800, 380);
             Controls.Add(btnExit);
             Controls.Add(btnCalculate);
