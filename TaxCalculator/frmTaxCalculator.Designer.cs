@@ -104,7 +104,7 @@
             menuStrip1.Items.AddRange(new ToolStripItem[] { loadToolStripMenuItem, showToolStripMenuItem, saveToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(681, 40);
+            menuStrip1.Size = new Size(681, 42);
             menuStrip1.TabIndex = 6;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -112,26 +112,27 @@
             // 
             loadToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { taxScheduleToolStripMenuItem, employeeIncomeToolStripMenuItem });
             loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            loadToolStripMenuItem.Size = new Size(85, 36);
+            loadToolStripMenuItem.Size = new Size(85, 38);
             loadToolStripMenuItem.Text = "Load";
             // 
             // taxScheduleToolStripMenuItem
             // 
             taxScheduleToolStripMenuItem.Name = "taxScheduleToolStripMenuItem";
-            taxScheduleToolStripMenuItem.Size = new Size(355, 44);
+            taxScheduleToolStripMenuItem.Size = new Size(359, 44);
             taxScheduleToolStripMenuItem.Text = "Tax Schedule ...";
+            taxScheduleToolStripMenuItem.Click += taxScheduleToolStripMenuItem_Click;
             // 
             // employeeIncomeToolStripMenuItem
             // 
             employeeIncomeToolStripMenuItem.Name = "employeeIncomeToolStripMenuItem";
-            employeeIncomeToolStripMenuItem.Size = new Size(355, 44);
+            employeeIncomeToolStripMenuItem.Size = new Size(359, 44);
             employeeIncomeToolStripMenuItem.Text = "Employee Income ..";
             // 
             // showToolStripMenuItem
             // 
             showToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { currentTaxScheduleToolStripMenuItem, employeeTaxesToolStripMenuItem });
             showToolStripMenuItem.Name = "showToolStripMenuItem";
-            showToolStripMenuItem.Size = new Size(92, 36);
+            showToolStripMenuItem.Size = new Size(92, 38);
             showToolStripMenuItem.Text = "Show";
             // 
             // currentTaxScheduleToolStripMenuItem
@@ -150,7 +151,7 @@
             // 
             saveToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { saveEmpolyeeTaxesToFileToolStripMenuItem });
             saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            saveToolStripMenuItem.Size = new Size(84, 36);
+            saveToolStripMenuItem.Size = new Size(84, 38);
             saveToolStripMenuItem.Text = "Save";
             // 
             // saveEmpolyeeTaxesToFileToolStripMenuItem
@@ -177,6 +178,7 @@
             Name = "frmTaxCalculator";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Income Tax Calculator";
+            Load += frmTaxCalculator_Load;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             ResumeLayout(false);
