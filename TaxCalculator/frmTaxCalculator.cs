@@ -46,5 +46,10 @@ namespace TaxCalculator
                 MessageBox.Show("You selected " + openFileDialog.FileName);// Check point file succesfully opened
             }
         }
+
+        private void btnCalculate_Click(object sender, EventArgs e)
+        {
+            // created by Ashraf
+        }
     }
 }
