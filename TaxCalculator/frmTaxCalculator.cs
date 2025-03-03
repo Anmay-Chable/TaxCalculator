@@ -113,33 +113,6 @@ namespace TaxCalculator
             }
 
         }
-        private void ReadCsvFile(string filePath)
-        {
-            taxSchedule.Clear(); // clear the list before reading the file
-            try
-            {
-                using (StreamReader reader = new StreamReader(filePath))
-                {
-                    string line;
-                    while ((line = reader.ReadLine()) != null)// read the file line by line
-                    {
-                        // split the line into an array of values
-                        string[] values = line.Split(',');
-                        TaxBracket taxBracket = new TaxBracket();
-                        taxBracket.LowerBound = decimal.Parse(values[0]);
-                        taxBracket.UpperBound = decimal.Parse(values[1]);
-                        taxBracket.BaseTax = decimal.Parse(values[2]);
-                        taxBracket.TaxRate = decimal.Parse(values[3]);
-                        taxBracket.ExcessOver = decimal.Parse(values[4]);
-                        taxSchedule.Add(taxBracket);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error reading the file: " + ex.Message); //
-            }
-        }
         private void btnCalculate_Click(object sender, EventArgs e)
         {
             // created by Ashraf
