@@ -89,6 +89,8 @@ namespace TaxCalculator
         {
             LoadCsvFile(false);// call the method to read the file
         }
+
+        // Method to calculate the tax for each employee
         private void btnCalculate_Click(object sender, EventArgs e)
         {
             // created by Ashraf
