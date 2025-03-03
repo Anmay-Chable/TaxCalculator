@@ -41,10 +41,10 @@ namespace TaxCalculator
         // Method to load the tax schedule from a CSV file
         private void LoadCsvFile( bool isTaxSchedule)
         {
-            //OpenFile dialog to allow the user to select the tax schedule
+            //OpenFile dialog to allow the user to select the tax schedule & or employee income file
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "CSV files (*.csv) | *.csv| All file (*.*) | *.*"; // Filter to show only csv files
-            openFileDialog.Title = isTaxSchedule ? "Select Tax Schedule CSV File" : "Select Employee Income CSV File";
+            openFileDialog.Title = isTaxSchedule ? "Select Tax Schedule CSV File" : "Select Employee Income CSV File"; 
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
