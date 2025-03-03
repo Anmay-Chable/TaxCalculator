@@ -1,4 +1,5 @@
 using System.IO;
+using System.Net.Http.Headers;
 
 namespace TaxCalculator
 {
@@ -7,6 +8,7 @@ namespace TaxCalculator
         /* This List store a collection of TaxBracket objects
          each TaxBracket object represents a tax bracket in the tax schedule */
         List<TaxBracket> taxSchedule = new List<TaxBracket>();
+        string[,] employeeIncomeData; // 2D array to store the employee income data
         public frmTaxCalculator()
         {
             InitializeComponent();
@@ -33,8 +35,7 @@ namespace TaxCalculator
 
         }
 
-        // Method to read the tax schedule from the csv file
-        private void taxScheduleToolStripMenuItem_Click(object sender, EventArgs e)
+        private void LoadCsvFile( bool isTaxSchedule)
         {
             //OpenFile dialog to allow the user to select the tax schedule
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -71,7 +72,12 @@ namespace TaxCalculator
                 }
             }
 
+        }
 
+        // Method to read the tax schedule from the csv file
+        private void taxScheduleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+           LoadCsvFile(true); // call the method to read the file
         }
 
         // Method to read the employee income from the csv file
@@ -85,41 +91,60 @@ namespace TaxCalculator
             // New Comment From Angel
         }
 
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
+        private void ReadCsvFile(string filePath, bool isTaxSchedule)
+        {
+            try
             {
-                // attempt to validate the file type and handle potential exceptions
-                try
+                if (isTaxSchedule)
                 {
-                    string filePath = openFileDialog.FileName;
-                    if (!filePath.ToLower().EndsWith(".csv"))
+                    taxSchedule.Clear(); // Clear existing tax schedule data
+                }
+
+                List<string> rows = new List<string>(); // Create a list to store the rows read from the file.
+                using (StreamReader reader = new StreamReader(filePath)) // Open the file for reading.
+                {
+                    string line; // Variable to store each line read from the file.
+                    while ((line = reader.ReadLine()) != null) // Read lines until the end of the file.
                     {
-                        // if the file is not a CSV file, throw an exception
-                        throw new ArgumentException("Invalid file type. Please select a CSV file.");
+                        string[] values = line.Split(','); // Split the line into an array of values.
+
+                        if (isTaxSchedule)
+                        {
+                            // Parse and add the tax bracket to the list
+                            TaxBracket taxBracket = new TaxBracket();
+                            taxBracket.LowerBound = decimal.Parse(values[0]);
+                            taxBracket.UpperBound = decimal.Parse(values[1]);
+                            taxBracket.BaseTax = decimal.Parse(values[2]);
+                            taxBracket.TaxRate = decimal.Parse(values[3]);
+                            taxBracket.ExcessOver = decimal.Parse(values[4]);
+                            taxSchedule.Add(taxBracket);
+                        }
+                        else
+                        {
+                            rows.Add(values); // Add the row to the list for employee income data
+                        }
                     }
-
-                    string fileName = Path.GetFileName(filePath);
-
-                    MessageBox.Show("You Selected: " + fileName, "Loading File"); // display only the file name
-
-                    //ReadCsvFile(filePath); // call the method to read the file
                 }
-                catch (ArgumentException ex)
+
+                if (!isTaxSchedule)
                 {
-                    // display an error message if the file type is invalid
-                    MessageBox.Show("Error reading the file: " + ex.Message);
-                }
-                catch (Exception ex)
-                {
-                    // display an error message if an unexpected error occurs
-                    MessageBox.Show("An unexpected error occured: " + ex.Message);
+                    // Create and populate the 2D array for employee income data
+                    int numRows = rows.Count;
+                    int numCols = rows[0].Length;
+                    employeeIncomeData = new string[numRows, numCols];
+                    for (int i = 0; i < numRows; i++)
+                    {
+                        for (int j = 0; j < numCols; j++)
+                        {
+                            employeeIncomeData[i, j] = rows[i][j];
+                        }
+                    }
                 }
             }
-
-        }
-        private void btnCalculate_Click(object sender, EventArgs e)
-        {
-            // created by Ashraf
-            // New Comment From Angel
+            catch (Exception ex) // Catch any exceptions that occur during file reading or parsing.
+            {
+                MessageBox.Show("Error reading the file: " + ex.Message); // Display an error message to the user.
+            }
         }
     }
 }
