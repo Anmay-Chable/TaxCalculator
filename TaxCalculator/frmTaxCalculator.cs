@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Primitives;
 using System.IO;
 using System.Net.Http.Headers;
 
@@ -9,6 +10,8 @@ namespace TaxCalculator
          each TaxBracket object represents a tax bracket in the tax schedule */
         List<TaxBracket> taxSchedule = new List<TaxBracket>();
         string[,] employeeIncomeData; // 2D array to store the employee income data
+        private string[] stringvalues;
+
         public frmTaxCalculator()
         {
             InitializeComponent();
@@ -35,12 +38,13 @@ namespace TaxCalculator
 
         }
 
+        // Method to load the tax schedule from a CSV file
         private void LoadCsvFile( bool isTaxSchedule)
         {
             //OpenFile dialog to allow the user to select the tax schedule
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "CSV files (*.csv) | *.csv| All file (*.*) | *.*"; // Filter to show only csv files
-            openFileDialog.Title = "Select Tax Schedule CSV File";
+            openFileDialog.Title = isTaxSchedule ? "Select Tax Schedule CSV File" : "Select Employee Income CSV File";
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -91,7 +95,7 @@ namespace TaxCalculator
             // New Comment From Angel
         }
 
-        private void ReadCsvFile(string filePath, bool isTaxSchedule)
+        private void ReadCsvFile(string filePath, bool isTaxSchedule, string[] values)
         {
             try
             {
@@ -100,51 +104,45 @@ namespace TaxCalculator
                     taxSchedule.Clear(); // Clear existing tax schedule data
                 }
 
-                List<string> rows = new List<string>(); // Create a list to store the rows read from the file.
-                using (StreamReader reader = new StreamReader(filePath)) // Open the file for reading.
-                {
-                    string line; // Variable to store each line read from the file.
-                    while ((line = reader.ReadLine()) != null) // Read lines until the end of the file.
-                    {
-                        string[] values = line.Split(','); // Split the line into an array of values.
+                List<string[]> rows = new(); // Create a list to store the rows read from the file.
 
-                        if (isTaxSchedule)
-                        {
-                            // Parse and add the tax bracket to the list
-                            TaxBracket taxBracket = new TaxBracket();
-                            taxBracket.LowerBound = decimal.Parse(values[0]);
-                            taxBracket.UpperBound = decimal.Parse(values[1]);
-                            taxBracket.BaseTax = decimal.Parse(values[2]);
-                            taxBracket.TaxRate = decimal.Parse(values[3]);
-                            taxBracket.ExcessOver = decimal.Parse(values[4]);
-                            taxSchedule.Add(taxBracket);
-                        }
-                        else
-                        {
-                            rows.Add(values); // Add the row to the list for employee income data
-                        }
+                foreach (var line in File.ReadLines(filePath))
+                {
+                    stringvalues = line.Split(','); // Split the line into an array of values.
+
+                    if (isTaxSchedule)
+                    {
+                        // Parse and add the tax bracket to the list
+                        TaxBracket taxBracket = new();
+                        taxBracket.LowerBound = decimal.Parse(values[0]);
+                        taxBracket.UpperBound = decimal.Parse(values[1]);
+                        taxBracket.BaseTax = decimal.Parse(values[2]);
+                        taxBracket.TaxRate = decimal.Parse(values[3]);
+                        taxBracket.ExcessOver = decimal.Parse(values[4]);
+                        taxSchedule.Add(taxBracket);
+                    }
+                    else
+                    {
+                        rows.Add(values); // Add the row to the list for employee income data
                     }
                 }
-
+                
                 if (!isTaxSchedule)
-                {
-                    // Create and populate the 2D array for employee income data
-                    int numRows = rows.Count;
-                    int numCols = rows[0].Length;
-                    employeeIncomeData = new string[numRows, numCols];
+                { // prevent accessing an empty list
+                    int numRows = rows.Count, numCols = rows[0].Length;
+                    employeeIncomeData = new string[numRows, numCols]; // Create a 2D array to store the employee income data
+
+                    // Copy the data from the list to the 2D array
                     for (int i = 0; i < numRows; i++)
-                    {
                         for (int j = 0; j < numCols; j++)
-                        {
                             employeeIncomeData[i, j] = rows[i][j];
-                        }
-                    }
                 }
             }
-            catch (Exception ex) // Catch any exceptions that occur during file reading or parsing.
+            catch (Exception ex)
             {
-                MessageBox.Show("Error reading the file: " + ex.Message); // Display an error message to the user.
+                MessageBox.Show($"Error reading the file: {ex.Message}");
             }
         }
     }
+
 }
