@@ -125,8 +125,7 @@ namespace TaxCalculator
                     {
                         rows.Add(values); // Add the row to the list for employee income data
                     }
-                }
-                
+                }     
                 if (!isTaxSchedule)
                 { // prevent accessing an empty list
                     int numRows = rows.Count, numCols = rows[0].Length;
