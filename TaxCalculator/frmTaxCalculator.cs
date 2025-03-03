@@ -43,14 +43,72 @@ namespace TaxCalculator
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                MessageBox.Show("You selected " + openFileDialog.FileName);// Check point file succesfully opened
+                // attempt to validate the file type and handle potential exceptions
+                try
+                {
+                    string filePath = openFileDialog.FileName;
+                    if (!filePath.ToLower().EndsWith(".csv"))
+                    {
+                        // if the file is not a CSV file, throw an exception
+                        throw new ArgumentException("Invalid file type. Please select a CSV file.");
+                    }
+
+                    string fileName = Path.GetFileName(filePath);
+
+                    MessageBox.Show("You Selected: " + fileName, "Loading File"); // display only the file name
+
+                    //ReadCsvFile(filePath); // call the method to read the file
+                }
+                catch (ArgumentException ex)
+                {
+                    // display an error message if the file type is invalid
+                    MessageBox.Show("Error reading the file: " + ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    // display an error message if an unexpected error occurs
+                    MessageBox.Show("An unexpected error occured: " + ex.Message);
+                }
+            }
+
+
+        }
+        private void ReadCsvFile(string filePath)
+        {
+            taxSchedule.Clear(); // clear the list before reading the file
+            try
+            {
+                using (StreamReader reader = new StreamReader(filePath))
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null)// read the file line by line
+                    {
+                        // split the line into an array of values
+                        string[] values = line.Split(',');
+                        TaxBracket taxBracket = new TaxBracket();
+                        taxBracket.LowerBound = decimal.Parse(values[0]);
+                        taxBracket.UpperBound = decimal.Parse(values[1]);
+                        taxBracket.BaseTax = decimal.Parse(values[2]);
+                        taxBracket.TaxRate = decimal.Parse(values[3]);
+                        taxBracket.ExcessOver = decimal.Parse(values[4]);
+                        taxSchedule.Add(taxBracket);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error reading the file: " + ex.Message); //
             }
         }
-
         private void btnCalculate_Click(object sender, EventArgs e)
         {
             // created by Ashraf
             // New Comment From Angel
+        }
+
+        private void employeeIncomeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
