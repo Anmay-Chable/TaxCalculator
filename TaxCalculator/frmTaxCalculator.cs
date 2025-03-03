@@ -77,10 +77,13 @@ namespace TaxCalculator
         // Method to read the employee income from the csv file
         private void employeeIncomeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //OpenFile dialog to allow the user to select the tax schedule
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "CSV files (*.csv) | *.csv| All file (*.*) | *.*"; // Filter to show only csv files
-            openFileDialog.Title = "Select Employee Income CSV File";
+            LoadCsvFile(false);// call the method to read the file
+        }
+        private void btnCalculate_Click(object sender, EventArgs e)
+        {
+            // created by Ashraf
+            // New Comment From Angel
+        }
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -118,7 +121,5 @@ namespace TaxCalculator
             // created by Ashraf
             // New Comment From Angel
         }
-
-
     }
 }
