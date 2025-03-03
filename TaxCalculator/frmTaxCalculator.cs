@@ -73,6 +73,46 @@ namespace TaxCalculator
 
 
         }
+
+        // Method to read the employee income from the csv file
+        private void employeeIncomeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //OpenFile dialog to allow the user to select the tax schedule
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "CSV files (*.csv) | *.csv| All file (*.*) | *.*"; // Filter to show only csv files
+            openFileDialog.Title = "Select Employee Income CSV File";
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                // attempt to validate the file type and handle potential exceptions
+                try
+                {
+                    string filePath = openFileDialog.FileName;
+                    if (!filePath.ToLower().EndsWith(".csv"))
+                    {
+                        // if the file is not a CSV file, throw an exception
+                        throw new ArgumentException("Invalid file type. Please select a CSV file.");
+                    }
+
+                    string fileName = Path.GetFileName(filePath);
+
+                    MessageBox.Show("You Selected: " + fileName, "Loading File"); // display only the file name
+
+                    //ReadCsvFile(filePath); // call the method to read the file
+                }
+                catch (ArgumentException ex)
+                {
+                    // display an error message if the file type is invalid
+                    MessageBox.Show("Error reading the file: " + ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    // display an error message if an unexpected error occurs
+                    MessageBox.Show("An unexpected error occured: " + ex.Message);
+                }
+            }
+
+        }
         private void ReadCsvFile(string filePath)
         {
             taxSchedule.Clear(); // clear the list before reading the file
@@ -106,9 +146,6 @@ namespace TaxCalculator
             // New Comment From Angel
         }
 
-        private void employeeIncomeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
 
-        }
     }
 }
