@@ -11,6 +11,7 @@ namespace TaxCalculator
         List<TaxBracket> taxSchedule = new List<TaxBracket>();
         string[,] employeeIncomeData; // 2D array to store the employee income data
         private string[] stringvalues;
+        frmTaxCalculatorDataVerifiers verifier = new frmTaxCalculatorDataVerifiers();
 
         public frmTaxCalculator()
         {
@@ -39,12 +40,12 @@ namespace TaxCalculator
         }
 
         // Method to load the tax schedule from a CSV file
-        private void LoadCsvFile( bool isTaxSchedule)
+        private void LoadCsvFile(bool isTaxSchedule)
         {
             //OpenFile dialog to allow the user to select the tax schedule & or employee income file
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "CSV files (*.csv) | *.csv| All file (*.*) | *.*"; // Filter to show only csv files
-            openFileDialog.Title = isTaxSchedule ? "Select Tax Schedule CSV File" : "Select Employee Income CSV File"; 
+            openFileDialog.Title = isTaxSchedule ? "Select Tax Schedule CSV File" : "Select Employee Income CSV File";
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -81,7 +82,7 @@ namespace TaxCalculator
         // Method to read the tax schedule from the csv file
         private void taxScheduleToolStripMenuItem_Click(object sender, EventArgs e)
         {
-           LoadCsvFile(true); // call the method to read the file
+            LoadCsvFile(true); // call the method to read the file
         }
 
         // Method to read the employee income from the csv file
@@ -95,6 +96,13 @@ namespace TaxCalculator
         {
             // created by Ashraf
             // New Comment From Angel
+
+            /* verifier.dataVerifierCSharpTester(); 
+                'debut' test to make sure that the frmTaxCalculatorDataVerifiers.cs methods can be called
+            verifier.IsPresent(txbTaxableIncome.Text,-1);       -1 is used for manual entries since the second method input is to show errors at which employee ID
+            verifier.IsWithinRange(txbTaxableIncome.Text, -1);
+            verifier.IsDecimal(txbTaxableIncome.Text, -1); */
+
         }
 
         private void ReadCsvFile(string filePath, bool isTaxSchedule, string[] values)
@@ -127,7 +135,7 @@ namespace TaxCalculator
                     {
                         rows.Add(values); // Add the row to the list for employee income data
                     }
-                }     
+                }
                 if (!isTaxSchedule)
                 { // prevent accessing an empty list
                     int numRows = rows.Count, numCols = rows[0].Length;
