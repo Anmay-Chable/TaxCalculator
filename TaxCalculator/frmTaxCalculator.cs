@@ -10,7 +10,7 @@ namespace TaxCalculator
          each TaxBracket object represents a tax bracket in the tax schedule */
         List<TaxBracket> taxSchedule = new List<TaxBracket>();
         string[,] employeeIncomeData; // 2D array to store the employee income data
-        private string[] stringvalues;
+        private string[]? stringvalues;
         frmTaxCalculatorDataVerifiers verifier = new frmTaxCalculatorDataVerifiers();
 
         public frmTaxCalculator()
@@ -63,7 +63,7 @@ namespace TaxCalculator
 
                     MessageBox.Show("You Selected: " + fileName, "Loading File"); // display only the file name
 
-                    //ReadCsvFile(filePath); // call the method to read the file
+                    ReadCsvFile(filePath, isTaxSchedule); // call the method to read the file
                 }
                 catch (ArgumentException ex)
                 {
@@ -105,7 +105,23 @@ namespace TaxCalculator
 
         }
 
-        private void ReadCsvFile(string filePath, bool isTaxSchedule, string[] values)
+        private void DisplayTaxSchedule()
+        {
+            if (taxSchedule.Count == 0)
+            {
+                MessageBox.Show("No Tax Schedule Data Loaded.", "Tax Schedule");
+                return;
+            }
+
+            string message = "Tax Schedule:\n";
+            foreach (var bracket in taxSchedule)
+            {
+                message += $"Lower: {bracket.LowerBound}, Upper: {bracket.UpperBound}, Base Tax: {bracket.BaseTax}, Tax Rate: {bracket.TaxRate}, Excess Over: {bracket.ExcessOver}\n";
+            }
+            MessageBox.Show(message, "Tax Schedule Data");
+        }
+
+        private void ReadCsvFile(string filePath, bool isTaxSchedule)
         {
             try
             {
@@ -124,16 +140,16 @@ namespace TaxCalculator
                     {
                         // Parse and add the tax bracket to the list
                         TaxBracket taxBracket = new();
-                        taxBracket.LowerBound = decimal.Parse(values[0]);
-                        taxBracket.UpperBound = decimal.Parse(values[1]);
-                        taxBracket.BaseTax = decimal.Parse(values[2]);
-                        taxBracket.TaxRate = decimal.Parse(values[3]);
-                        taxBracket.ExcessOver = decimal.Parse(values[4]);
+                        taxBracket.LowerBound = decimal.Parse(stringvalues[0]);
+                        taxBracket.UpperBound = decimal.Parse(stringvalues[1]);
+                        taxBracket.BaseTax = decimal.Parse(stringvalues[2]);
+                        taxBracket.TaxRate = decimal.Parse(stringvalues[3]);
+                        taxBracket.ExcessOver = decimal.Parse(stringvalues[4]);
                         taxSchedule.Add(taxBracket);
                     }
                     else
                     {
-                        rows.Add(values); // Add the row to the list for employee income data
+                        rows.Add(stringvalues); // Add the row to the list for employee income data
                     }
                 }
                 if (!isTaxSchedule)
@@ -146,11 +162,26 @@ namespace TaxCalculator
                         for (int j = 0; j < numCols; j++)
                             employeeIncomeData[i, j] = rows[i][j];
                 }
+                string arrayDisplay = "Employee Income Data:\n";
+                for (int i = 0; i < employeeIncomeData.GetLength(0); i++)
+                {
+                    for (int j = 0; j < employeeIncomeData.GetLength(1); j++)
+                    {
+                        arrayDisplay += employeeIncomeData[i, j] + " ";
+                    }
+                    arrayDisplay += "\n";
+                }
+                MessageBox.Show(arrayDisplay, "Employee Income Data");
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error reading the file: {ex.Message}");
             }
+        }
+
+        private void currentTaxScheduleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DisplayTaxSchedule();
         }
     }
 

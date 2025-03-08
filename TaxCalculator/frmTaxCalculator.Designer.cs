@@ -125,14 +125,14 @@
             // taxScheduleToolStripMenuItem
             // 
             taxScheduleToolStripMenuItem.Name = "taxScheduleToolStripMenuItem";
-            taxScheduleToolStripMenuItem.Size = new Size(359, 44);
+            taxScheduleToolStripMenuItem.Size = new Size(355, 44);
             taxScheduleToolStripMenuItem.Text = "Tax Schedule ...";
             taxScheduleToolStripMenuItem.Click += taxScheduleToolStripMenuItem_Click;
             // 
             // employeeIncomeToolStripMenuItem
             // 
             employeeIncomeToolStripMenuItem.Name = "employeeIncomeToolStripMenuItem";
-            employeeIncomeToolStripMenuItem.Size = new Size(359, 44);
+            employeeIncomeToolStripMenuItem.Size = new Size(355, 44);
             employeeIncomeToolStripMenuItem.Text = "Employee Income ..";
             employeeIncomeToolStripMenuItem.Click += employeeIncomeToolStripMenuItem_Click;
             // 
@@ -148,6 +148,7 @@
             currentTaxScheduleToolStripMenuItem.Name = "currentTaxScheduleToolStripMenuItem";
             currentTaxScheduleToolStripMenuItem.Size = new Size(372, 44);
             currentTaxScheduleToolStripMenuItem.Text = "Current Tax Schedule";
+            currentTaxScheduleToolStripMenuItem.Click += currentTaxScheduleToolStripMenuItem_Click;
             // 
             // employeeTaxesToolStripMenuItem
             // 
