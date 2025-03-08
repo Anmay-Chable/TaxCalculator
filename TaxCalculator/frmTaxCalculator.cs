@@ -10,8 +10,14 @@ namespace TaxCalculator
          each TaxBracket object represents a tax bracket in the tax schedule */
         List<TaxBracket> taxSchedule = new List<TaxBracket>();
         string[,] employeeIncomeData; // 2D array to store the employee income data
-        private string[]? stringvalues;
+        private string[] stringvalues;
         frmTaxCalculatorDataVerifiers verifier = new frmTaxCalculatorDataVerifiers();
+        frmTaxCalculationCollection calculationCollection = new frmTaxCalculationCollection();
+        string[] taxHeaders = new string[] { "LowerBound", "UpperBound", "BaseTax", "ExcessOver" };
+        string[] employeeHeaders = new string[] { "EmployeeID", "Salary" };
+
+        private string taxScheduleFilePath = "";
+        private string employeeIncomeFilePath = "";
 
         public frmTaxCalculator()
         {
@@ -60,10 +66,13 @@ namespace TaxCalculator
                     }
 
                     string fileName = Path.GetFileName(filePath);
-
+                    if (isTaxSchedule) { taxScheduleFilePath = filePath; } else { employeeIncomeFilePath = filePath; }
                     MessageBox.Show("You Selected: " + fileName, "Loading File"); // display only the file name
 
-                    ReadCsvFile(filePath, isTaxSchedule); // call the method to read the file
+                    //for (int i = 0; i < taxScheduleFilePath.Length; i++) 
+                    //{ 
+                    ReadCsvFile(filePath, isTaxSchedule, isTaxSchedule ? taxHeaders : employeeHeaders); // call the method to read the file
+                    //}
                 }
                 catch (ArgumentException ex)
                 {
@@ -94,34 +103,49 @@ namespace TaxCalculator
         // Method to calculate the tax for each employee
         private void btnCalculate_Click(object sender, EventArgs e)
         {
-            // created by Ashraf
-            // New Comment From Angel
+            try
+            {
+                if (taxSchedule.Count == 0)
+                {
+                    MessageBox.Show("Please load a tax schdule first.", "Entry Error");
+                    return;
+                }
 
-            /* verifier.dataVerifierCSharpTester(); 
-                'debut' test to make sure that the frmTaxCalculatorDataVerifiers.cs methods can be called
-            verifier.IsPresent(txbTaxableIncome.Text,-1);       -1 is used for manual entries since the second method input is to show errors at which employee ID
-            verifier.IsWithinRange(txbTaxableIncome.Text, -1);
-            verifier.IsDecimal(txbTaxableIncome.Text, -1); */
+                if (!string.IsNullOrWhiteSpace(txbTaxableIncome.Text))
+                {
+                    if (!verifier.IsDecimal(txbTaxableIncome.Text, -1))
+                    {
+                        MessageBox.Show("Please enter a vaild decimal number for taxable income or an employee income spread sheet first.", "Entry Error");
+                        return;
+                    }
 
+                    decimal salary = decimal.Parse(txbTaxableIncome.Text);
+                    decimal taxDue = Math.Round(calculationCollection.CalculateTax(salary, taxSchedule), 4);
+                    txbIncomeOwed.Text = taxDue.ToString();
+                }
+                else if (employeeIncomeData != null && employeeIncomeData.Length > 0)
+                {
+                    if (!string.IsNullOrWhiteSpace(txbTaxableIncome.Text))
+                    {
+                        MessageBox.Show("Please remove all values from the taxable income field when an employee income csv file is loaded.", "Entry Error");
+                        return;
+                    }
+                    else
+                    {
+                        List<frmTaxCalculationCollection.EmployeeTaxResult> results = calculationCollection.CalculateTaxesForAllEmployees(employeeIncomeData, taxSchedule);
+                        DisplayResults(results);
+
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error calculating taxes: {ex.Message}");
+            }
         }
 
-        private void DisplayTaxSchedule()
-        {
-            if (taxSchedule.Count == 0)
-            {
-                MessageBox.Show("No Tax Schedule Data Loaded.", "Tax Schedule");
-                return;
-            }
-
-            string message = "Tax Schedule:\n";
-            foreach (var bracket in taxSchedule)
-            {
-                message += $"Lower: {bracket.LowerBound}, Upper: {bracket.UpperBound}, Base Tax: {bracket.BaseTax}, Tax Rate: {bracket.TaxRate}, Excess Over: {bracket.ExcessOver}\n";
-            }
-            MessageBox.Show(message, "Tax Schedule Data");
-        }
-
-        private void ReadCsvFile(string filePath, bool isTaxSchedule)
+        private void ReadCsvFile(string filePath, bool isTaxSchedule, string[] values)
         {
             try
             {
@@ -140,16 +164,16 @@ namespace TaxCalculator
                     {
                         // Parse and add the tax bracket to the list
                         TaxBracket taxBracket = new();
-                        taxBracket.LowerBound = decimal.Parse(stringvalues[0]);
-                        taxBracket.UpperBound = decimal.Parse(stringvalues[1]);
-                        taxBracket.BaseTax = decimal.Parse(stringvalues[2]);
-                        taxBracket.TaxRate = decimal.Parse(stringvalues[3]);
-                        taxBracket.ExcessOver = decimal.Parse(stringvalues[4]);
+                        taxBracket.LowerBound = decimal.Parse(values[0]);
+                        taxBracket.UpperBound = decimal.Parse(values[1]);
+                        taxBracket.BaseTax = decimal.Parse(values[2]);
+                        taxBracket.TaxRate = decimal.Parse(values[3]);
+                        taxBracket.ExcessOver = decimal.Parse(values[4]);
                         taxSchedule.Add(taxBracket);
                     }
                     else
                     {
-                        rows.Add(stringvalues); // Add the row to the list for employee income data
+                        rows.Add(values); // Add the row to the list for employee income data
                     }
                 }
                 if (!isTaxSchedule)
@@ -162,26 +186,17 @@ namespace TaxCalculator
                         for (int j = 0; j < numCols; j++)
                             employeeIncomeData[i, j] = rows[i][j];
                 }
-                string arrayDisplay = "Employee Income Data:\n";
-                for (int i = 0; i < employeeIncomeData.GetLength(0); i++)
-                {
-                    for (int j = 0; j < employeeIncomeData.GetLength(1); j++)
-                    {
-                        arrayDisplay += employeeIncomeData[i, j] + " ";
-                    }
-                    arrayDisplay += "\n";
-                }
-                MessageBox.Show(arrayDisplay, "Employee Income Data");
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error reading the file: {ex.Message}");
             }
         }
-
-        private void currentTaxScheduleToolStripMenuItem_Click(object sender, EventArgs e)
+        private void DisplayResults(List<frmTaxCalculationCollection.EmployeeTaxResult> results)
         {
-            DisplayTaxSchedule();
+            //dataGridView1.DataSource = results;
+            decimal totalTax = results.Sum(r => r.TaxDue);
+            txbIncomeOwed.Text = $"Total Tax Owed: ${totalTax}";
         }
     }
 
