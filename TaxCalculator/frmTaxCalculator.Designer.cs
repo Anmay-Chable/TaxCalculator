@@ -148,7 +148,7 @@
             currentTaxScheduleToolStripMenuItem.Name = "currentTaxScheduleToolStripMenuItem";
             currentTaxScheduleToolStripMenuItem.Size = new Size(372, 44);
             currentTaxScheduleToolStripMenuItem.Text = "Current Tax Schedule";
-            currentTaxScheduleToolStripMenuItem.Click += currentTaxScheduleToolStripMenuItem_Click;
+            //currentTaxScheduleToolStripMenuItem.Click += currentTaxScheduleToolStripMenuItem_Click;
             // 
             // employeeTaxesToolStripMenuItem
             // 
