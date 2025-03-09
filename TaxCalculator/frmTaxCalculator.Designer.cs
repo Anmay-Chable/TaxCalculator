@@ -169,6 +169,7 @@
             saveEmpolyeeTaxesToFileToolStripMenuItem.Name = "saveEmpolyeeTaxesToFileToolStripMenuItem";
             saveEmpolyeeTaxesToFileToolStripMenuItem.Size = new Size(467, 44);
             saveEmpolyeeTaxesToFileToolStripMenuItem.Text = "Save Empolyee Taxes to File ...";
+            saveEmpolyeeTaxesToFileToolStripMenuItem.Click += saveEmpolyeeTaxesToFileToolStripMenuItem_Click;
             // 
             // frmTaxCalculator
             // 
