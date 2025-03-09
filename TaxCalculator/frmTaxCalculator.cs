@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Primitives;
+using Microsoft.VisualBasic;
 using System.IO;
 using System.Net.Http.Headers;
 
@@ -107,13 +108,9 @@ namespace TaxCalculator
         {
             try
             {
-                if (taxSchedule.Count == 0)
-                {
-                    MessageBox.Show("Please load a tax schdule first.", "Entry Error");
-                    return;
-                }
+                verifier.IsCsvFileLoaded(taxScheduleFilePath, true, true);
 
-                if (!string.IsNullOrWhiteSpace(txbTaxableIncome.Text))
+                if (!string.IsNullOrWhiteSpace(txbTaxableIncome.Text) && !verifier.IsCsvFileLoaded(employeeIncomeFilePath, false, false))
                 {
                     if (!verifier.IsDecimal(txbTaxableIncome.Text, -1))
                     {
@@ -125,7 +122,7 @@ namespace TaxCalculator
                     decimal taxDue = Math.Round(calculationCollection.CalculateTax(salary, taxSchedule), 4);
                     txbIncomeOwed.Text = taxDue.ToString();
                 }
-                else if (employeeIncomeData != null && employeeIncomeData.Length > 0)
+                else if (verifier.IsCsvFileLoaded(employeeIncomeFilePath, false, true))
                 {
                     if (!string.IsNullOrWhiteSpace(txbTaxableIncome.Text))
                     {
@@ -135,7 +132,7 @@ namespace TaxCalculator
                     else
                     {
                         List<frmTaxCalculationCollection.EmployeeTaxResult> results = calculationCollection.CalculateTaxesForAllEmployees(employeeIncomeData, taxSchedule);
-                        DisplayResults(results);
+                        DisplayTotalEmployeeTaxDue(results);
 
 
                     }
@@ -213,11 +210,74 @@ namespace TaxCalculator
                 MessageBox.Show($"Error reading the file: {ex.Message}");
             }
         }
-        private void DisplayResults(List<frmTaxCalculationCollection.EmployeeTaxResult> results)
+        private void DisplayTotalEmployeeTaxDue(List<frmTaxCalculationCollection.EmployeeTaxResult> results)
         {
-            //dataGridView1.DataSource = results;
+
             decimal totalTax = results.Sum(r => r.TaxDue);
             MessageBox.Show($"Total Tax Owed: ${totalTax:N2}", "Total Employee Tax Due");
+
+        }
+        private void DisplayIndividualEmployeeTaxDue(string[,] employeeTaxData)
+        {
+            string msg = "Employee Id     |     Employee Tax Amount\n";
+
+            int rows = employeeTaxData.GetLength(0);
+            for (int i = 0; i < rows; i++)
+            {
+                msg += ($"${i}     |     " + $"${employeeTaxData[i, 1]:N2}\n");
+            }
+
+            MessageBox.Show(msg, "Individual Employee Tax Amount");
+        }
+
+        private void DisplayIndividualEmployeeTaxDue(object sender, EventArgs e)
+        {
+            if (verifier.IsCsvFileLoaded(taxScheduleFilePath, true, true) && verifier.IsCsvFileLoaded(employeeIncomeFilePath, false, true))
+            {
+                List<frmTaxCalculationCollection.EmployeeTaxResult> employeeTaxData = calculationCollection.CalculateTaxesForAllEmployees(employeeIncomeData, taxSchedule); ;
+
+                int idColumnWidth = 12;
+                int taxColumnWidth = 20;
+
+                string msg = $"{"Employee Id".PadRight(idColumnWidth)}| {"Employee Tax Amount".PadLeft(taxColumnWidth)}\n";
+                msg += new string('-', idColumnWidth + taxColumnWidth + 3) + "\n";
+
+                foreach (var employee in employeeTaxData)
+                {
+                    msg += $"{employee.EmployeeID.ToString().PadRight(idColumnWidth)}| " +
+                           $"{employee.TaxDue.ToString("C2").PadLeft(taxColumnWidth)}\n";
+                }
+
+                MessageBox.Show(msg, "Individual Employee Tax Amount");
+            }
+            else
+            {
+                return;
+            }
+        }
+        private void DisplayLoadedTaxSchedule(object sender, EventArgs e)
+        {
+            string filePath = taxScheduleFilePath;
+            string msg = "";
+
+            if (verifier.IsCsvFileLoaded(filePath, true, true))
+            {
+                int i = 1;
+                msg += "File path: " + filePath + "\n\n";
+                msg += "Slice | MinIncome | MaxIncome | MinTax | TaxRate\n";
+                foreach (var slice in taxSchedule.OrderBy(s => s.LowerBound))
+                {
+                    msg += Convert.ToString(i) + " | " + Convert.ToString(slice.LowerBound) +
+                    " | " + Convert.ToString(slice.UpperBound) + " | " + Convert.ToString(slice.BaseTax) +
+                    " | " + Convert.ToString(slice.TaxRate) + "\n";
+                    i++;
+                }
+                MessageBox.Show(msg, "Loaded Tax Schedule");
+            }
+        }
+        private void txbTaxableIncomeChangeUpdate(object sender, EventArgs e)
+        {
+            txbIncomeOwed.Clear();
         }
     }
 

@@ -14,7 +14,7 @@ public class frmTaxCalculationCollection
             decimal incomeInSlice = Math.Min(employeeSalary, slice.UpperBound) - slice.LowerBound;
             if (incomeInSlice <= 0) continue;
 
-            taxDue += slice.BaseTax + (incomeInSlice * slice.TaxRate);
+            taxDue += slice.BaseTax + (incomeInSlice * (slice.TaxRate / 100));
         }
         return taxDue;
     }
@@ -23,15 +23,14 @@ public class frmTaxCalculationCollection
         List<EmployeeTaxResult> results = new List<EmployeeTaxResult>();
         int rows = employeeIncomeData.GetLength(0);
 
-        for (int i = 0; i < rows; i++)
+        for (int i = 1; i < rows; i++)
         {
-            string employeeId = employeeIncomeData[i, 0];
-            decimal salary = decimal.Parse(employeeIncomeData[i, 1]);
+            decimal salary = Convert.ToDecimal(employeeIncomeData[i, 1]);
             decimal tax = CalculateTax(salary, taxSchedule);
 
             results.Add(new EmployeeTaxResult
             {
-                EmployeeID = employeeId,
+                EmployeeID = Convert.ToString(i),
                 Salary = salary,
                 TaxDue = tax
             });
