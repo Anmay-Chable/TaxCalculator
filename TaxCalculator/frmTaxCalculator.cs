@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Primitives;
 using Microsoft.VisualBasic;
+using System.CodeDom.Compiler;
 using System.IO;
 using System.Net.Http.Headers;
 
@@ -131,7 +132,8 @@ namespace TaxCalculator
                     }
                     else
                     {
-                        List<frmTaxCalculationCollection.EmployeeTaxResult> results = calculationCollection.CalculateTaxesForAllEmployees(employeeIncomeData, taxSchedule);
+                        calculationCollection.CalculateTaxesForAllEmployees(employeeIncomeData, taxSchedule); // Calculate taxes
+                        List<frmTaxCalculationCollection.EmployeeTaxResult> results = calculationCollection.Results; // Access the property
                         DisplayTotalEmployeeTaxDue(results);
 
 
@@ -278,6 +280,19 @@ namespace TaxCalculator
         private void txbTaxableIncomeChangeUpdate(object sender, EventArgs e)
         {
             txbIncomeOwed.Clear();
+        }
+
+        private void saveEmpolyeeTaxesToFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "CSV files (*.csv) | *.csv| All file (*.*) | *.*";
+            saveFileDialog.DefaultExt = "csv";
+            saveFileDialog.Title = "Save Employee Tax Data";
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                frmSaveFile.Save(saveFileDialog.FileName, calculationCollection.Results);
+            }
         }
     }
 

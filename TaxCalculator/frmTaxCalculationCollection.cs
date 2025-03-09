@@ -3,6 +3,7 @@ using TaxCalculator;
 
 public class frmTaxCalculationCollection
 {
+    public List<EmployeeTaxResult> Results { get; private set; } = new();// Public property
     public decimal CalculateTax(decimal employeeSalary, List<frmTaxCalculator.TaxBracket> taxSchedule)
     {
         decimal taxDue = 0;
@@ -20,7 +21,7 @@ public class frmTaxCalculationCollection
     }
     public List<EmployeeTaxResult> CalculateTaxesForAllEmployees(string[,] employeeIncomeData, List<frmTaxCalculator.TaxBracket> taxSchedule)
     {
-        List<EmployeeTaxResult> results = new List<EmployeeTaxResult>();
+        Results = new List<EmployeeTaxResult>(); // Initialize the list
         int rows = employeeIncomeData.GetLength(0);
 
         for (int i = 1; i < rows; i++)
@@ -28,19 +29,19 @@ public class frmTaxCalculationCollection
             decimal salary = Convert.ToDecimal(employeeIncomeData[i, 1]);
             decimal tax = CalculateTax(salary, taxSchedule);
 
-            results.Add(new EmployeeTaxResult
+            Results.Add(new EmployeeTaxResult
             {
                 EmployeeID = Convert.ToString(i),
-                Salary = salary,
+                //Salary = salary,
                 TaxDue = tax
             });
         }
-        return results;
+        return Results;
     }
     public class EmployeeTaxResult
     {
-        public string EmployeeID { get; set; }
-        public decimal Salary { get; set; }
+        public required string EmployeeID { get; set; }
+        //public decimal Salary { get; set; }
         public decimal TaxDue { get; set; }
     }
 }
