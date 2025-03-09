@@ -13,8 +13,9 @@ namespace TaxCalculator
         private string[] stringvalues;
         frmTaxCalculatorDataVerifiers verifier = new frmTaxCalculatorDataVerifiers();
         frmTaxCalculationCollection calculationCollection = new frmTaxCalculationCollection();
-        string[] taxHeaders = new string[] { "LowerBound", "UpperBound", "BaseTax", "ExcessOver" };
-        string[] employeeHeaders = new string[] { "EmployeeID", "Salary" };
+        //string[] taxHeaders = new string[] { "LowerBound", "UpperBound", "BaseTax", "ExcessOver" };
+        //string[] taxHeaders = new string[] { "Slice", "MinIncome", "MaxIncome", "MinTax", "TaxRate" };
+        //string[] employeeHeaders = new string[] { "EmployeeID", "Salary" };
 
         private string taxScheduleFilePath = "";
         private string employeeIncomeFilePath = "";
@@ -28,6 +29,7 @@ namespace TaxCalculator
         public class TaxBracket
         {
             // Properties of the TaxBracket class & using { get; set; } to get and set the values
+            public decimal SliceIndex { get; set; }
             public decimal LowerBound { get; set; }
             public decimal UpperBound { get; set; }
             public decimal BaseTax { get; set; }
@@ -71,7 +73,7 @@ namespace TaxCalculator
 
                     //for (int i = 0; i < taxScheduleFilePath.Length; i++) 
                     //{ 
-                    ReadCsvFile(filePath, isTaxSchedule, isTaxSchedule ? taxHeaders : employeeHeaders); // call the method to read the file
+                    ReadCsvFile(filePath, isTaxSchedule/*, isTaxSchedule ? taxHeaders : employeeHeaders*/); // call the method to read the file
                     //}
                 }
                 catch (ArgumentException ex)
@@ -145,7 +147,7 @@ namespace TaxCalculator
             }
         }
 
-        private void ReadCsvFile(string filePath, bool isTaxSchedule, string[] values)
+        private void ReadCsvFile(string filePath, bool isTaxSchedule/*, string[] values*/)
         {
             try
             {
@@ -158,17 +160,36 @@ namespace TaxCalculator
 
                 foreach (var line in File.ReadLines(filePath))
                 {
-                    stringvalues = line.Split(','); // Split the line into an array of values.
+                    string[] values = line.Split(','); // Split the line into an array of values.
+
+                    for (int i = 0; i < values.Length; i++)
+                    {
+                        values[i] = values[i].Trim();
+                        if (string.IsNullOrEmpty(values[i]))
+                        {
+                            values[i] = "0"; // Replace missing values with "0"
+                        }
+                    }
 
                     if (isTaxSchedule)
                     {
                         // Parse and add the tax bracket to the list
                         TaxBracket taxBracket = new();
-                        taxBracket.LowerBound = decimal.Parse(values[0]);
-                        taxBracket.UpperBound = decimal.Parse(values[1]);
-                        taxBracket.BaseTax = decimal.Parse(values[2]);
-                        taxBracket.TaxRate = decimal.Parse(values[3]);
-                        taxBracket.ExcessOver = decimal.Parse(values[4]);
+                        decimal.TryParse(values[1], System.Globalization.NumberStyles.AllowThousands, System.Globalization.CultureInfo.InvariantCulture, out decimal minIncome);
+                        decimal.TryParse(values[2], System.Globalization.NumberStyles.AllowThousands, System.Globalization.CultureInfo.InvariantCulture, out decimal MaxIncome);
+                        decimal.TryParse(values[3], System.Globalization.NumberStyles.AllowThousands, System.Globalization.CultureInfo.InvariantCulture, out decimal MinTax);
+                        decimal.TryParse(values[4], System.Globalization.NumberStyles.AllowThousands, System.Globalization.CultureInfo.InvariantCulture, out decimal TaxRate);
+                        /* taxBracket.LowerBound = decimal.Parse(values[1]);
+                        taxBracket.UpperBound = decimal.Parse(values[2]);
+                        taxBracket.BaseTax = decimal.Parse(values[3]);
+                        taxBracket.TaxRate = decimal.Parse(values[4]);
+                        taxBracket.ExcessOver = decimal.Parse(values[5]); */
+
+                        taxBracket.LowerBound = minIncome;
+                        taxBracket.UpperBound = MaxIncome;
+                        taxBracket.BaseTax = MinTax;
+                        taxBracket.TaxRate = TaxRate;
+
                         taxSchedule.Add(taxBracket);
                     }
                     else
@@ -196,7 +217,7 @@ namespace TaxCalculator
         {
             //dataGridView1.DataSource = results;
             decimal totalTax = results.Sum(r => r.TaxDue);
-            txbIncomeOwed.Text = $"Total Tax Owed: ${totalTax}";
+            MessageBox.Show($"Total Tax Owed: ${totalTax:N2}", "Total Employee Tax Due");
         }
     }
 
