@@ -148,13 +148,14 @@
             currentTaxScheduleToolStripMenuItem.Name = "currentTaxScheduleToolStripMenuItem";
             currentTaxScheduleToolStripMenuItem.Size = new Size(372, 44);
             currentTaxScheduleToolStripMenuItem.Text = "Current Tax Schedule";
-            //currentTaxScheduleToolStripMenuItem.Click += currentTaxScheduleToolStripMenuItem_Click;
+            currentTaxScheduleToolStripMenuItem.Click += DisplayLoadedTaxSchedule;
             // 
             // employeeTaxesToolStripMenuItem
             // 
             employeeTaxesToolStripMenuItem.Name = "employeeTaxesToolStripMenuItem";
             employeeTaxesToolStripMenuItem.Size = new Size(372, 44);
             employeeTaxesToolStripMenuItem.Text = "Employee Taxes";
+            employeeTaxesToolStripMenuItem.Click += DisplayIndividualEmployeeTaxDue;
             // 
             // saveToolStripMenuItem
             // 
